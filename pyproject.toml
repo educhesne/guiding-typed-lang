@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "simple_types"
+version = "0.1"
+dependencies = [
+    "lark @ git+https://github.com/educhesne/lark.git@attributed_lark",
+    "outlines @ git+https://github.com/educhesne/outlines@attributed_lark_compatibility",
+    "logical-unification",
+    "ipywidgets",
+    "jupyter-book",
+    "ghp-import",
+]
