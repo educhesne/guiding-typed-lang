@@ -11,8 +11,11 @@ to tackle more complex languages (like dependent types).
 The intermediate postfix language may look like a trick, but I reckon there is a deeper meaning to it. Prefix and postfix 
 forms are both depth-first walks of a same inference tree. The choice to use prefix form is only -- I believe -- a
 question of human-readability. So it may be possible to build a generic tool around these inference systems
- that transform grammars and languages back and forth between easy-to-read and easy-to-generate, thus avoiding the 
- task of defining manually new grammars and tree transformation.
+that transform grammars and languages back and forth between easy-to-read and easy-to-generate, thus avoiding the 
+task of defining manually new grammars and tree transformation.
+
+Having this kind of tools for existing languages also means being able to transform
+entire codebases, and thus fine-tune a LLM on them.
 
 The features showcased here a very much a work in progress. Some features are lacking; for instance contextual
 terminal symbols could lead the generation in a deadend if not used carefully, so the grammar
