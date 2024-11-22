@@ -1,0 +1,21 @@
+# Book settings
+# Learn more at https://jupyterbook.org/customize/config.html
+
+title: Guided generation of typed languages
+author: Etienne Duchesne
+
+# Force re-execution of notebooks on each build.
+# See https://jupyterbook.org/content/execute.html
+execute:
+  execute_notebooks: off
+
+
+repository:
+  url: https://github.com/educhesne/guiding-typed-lang
+  path_to_book: docs
+  branch: master
+
+
+html:
+  use_issues_button: true
+  use_repository_button: true
