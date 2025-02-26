@@ -8,8 +8,15 @@ version = "0.1"
 dependencies = [
     "lark @ git+https://github.com/educhesne/lark.git@attributed_lark",
     "outlines @ git+https://github.com/educhesne/outlines.git@attributed_lark_compatibility",
+    "transformers[sentencepiece]",
+    "datasets",
+    "accelerate",
+    "torch",
     "logical-unification",
     "ipywidgets",
     "jupyter-book",
     "ghp-import",
 ]
+
+[tool.setuptools]
+packages = ["simple_types"]
