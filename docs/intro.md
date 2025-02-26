@@ -22,10 +22,6 @@ Some minimal changes to outlines were also necessary to ensure their compatibili
 ([there](https://github.com/educhesne/outlines/tree/attributed_lark_compatibility)).
 
 
-```{caution} This fork of Lark was developped solely for the purpose of this poc; it is largely unstable.
-```
-
-
 ## Guided generation and prefix closure
 
 Guided generation following a CFG relies on an automata telling the generator which follow-up tokens are admissible. It 
