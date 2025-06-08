@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "simple_types"
 version = "0.1"
 dependencies = [
-    "lark @ git+https://github.com/educhesne/lark.git@attributed_lark",
+    "attribute_lark @ git+https://github.com/educhesne/attribute_lark.git",
     "outlines @ git+https://github.com/educhesne/outlines.git@attributed_lark_compatibility",
     "transformers[sentencepiece]",
     "datasets",
