@@ -452,7 +452,7 @@ called in the attribute of the derivation <code class="docutils literal notransl
 <p>First the grammar to parse typed Haskell terms; it cannot be used for guided generation.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">lark</span><span class="w"> </span><span class="kn">import</span> <span class="n">Lark</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">attribute_lark</span><span class="w"> </span><span class="kn">import</span> <span class="n">AttributeLark</span>
 
 <span class="n">typed_lambda_grammar</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
 <span class="si">%i</span><span class="s2">mport common.CNAME</span>
@@ -492,7 +492,7 @@ called in the attribute of the derivation <code class="docutils literal notransl
 <span class="s2">SND: &quot;snd&quot;</span>
 <span class="s2">&quot;&quot;&quot;</span>
 
-<span class="n">prefix_parser</span> <span class="o">=</span> <span class="n">Lark</span><span class="p">(</span><span class="n">typed_lambda_grammar</span><span class="p">,</span> <span class="n">parser</span><span class="o">=</span><span class="s2">&quot;lalr&quot;</span><span class="p">)</span>
+<span class="n">prefix_parser</span> <span class="o">=</span> <span class="n">AttributeLark</span><span class="p">(</span><span class="n">typed_lambda_grammar</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -520,7 +520,7 @@ only if the types of the previous symbols are matching.</p>
 <span class="s2">_start: lambda                {{ syn[1] }}</span>
 <span class="s2">| app                         {{ syn[1] }}</span>
 
-<span class="s2">app: term term APP{{ &quot;App$&quot; if ctx_is_applicable(syn[1], syn[2], GLOBAL) else &quot;&quot; }}     {{ ctx_app(syn[1], syn[2], GLOBAL) }}    -&gt; app</span>
+<span class="s2">app: term term APP{{ &quot;App&quot; if ctx_is_applicable(syn[1], syn[2], GLOBAL) else &quot;&quot; }}     {{ ctx_app(syn[1], syn[2], GLOBAL) }}    -&gt; app</span>
 <span class="s2">| term term PAIR                                                                        {{ ctx_pair(syn[1], syn[2], GLOBAL) }}   -&gt; pair</span>
 <span class="s2">| term                                                                                  {{ syn[1] }}                             -&gt; term</span>
 
@@ -546,7 +546,7 @@ only if the types of the previous symbols are matching.</p>
 <span class="s2">APP: &quot;App&quot;</span>
 <span class="s2">&quot;&quot;&quot;</span>
 
-<span class="n">postfix_parser</span> <span class="o">=</span> <span class="n">Lark</span><span class="p">(</span><span class="n">postfix_lambda_grammar</span><span class="p">,</span> <span class="n">parser</span><span class="o">=</span><span class="s2">&quot;lalr&quot;</span><span class="p">)</span>
+<span class="n">postfix_parser</span> <span class="o">=</span> <span class="n">AttributeLark</span><span class="p">(</span><span class="n">postfix_lambda_grammar</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -564,9 +564,9 @@ only if the types of the previous symbols are matching.</p>
 <p>Up to parenthesis, these operation are inverse of each other.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">lark.visitors</span><span class="w"> </span><span class="kn">import</span> <span class="n">Transformer</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">lark.tree</span><span class="w"> </span><span class="kn">import</span> <span class="n">Tree</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">lark.lexer</span><span class="w"> </span><span class="kn">import</span> <span class="n">Token</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">attribute_lark.visitors</span><span class="w"> </span><span class="kn">import</span> <span class="n">Transformer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">attribute_lark.tree</span><span class="w"> </span><span class="kn">import</span> <span class="n">Tree</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">attribute_lark.lexer</span><span class="w"> </span><span class="kn">import</span> <span class="n">Token</span>
 
 <span class="k">class</span><span class="w"> </span><span class="nc">PrefixToPostfix</span><span class="p">(</span><span class="n">Transformer</span><span class="p">):</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">app</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">children</span><span class="p">):</span>
@@ -644,7 +644,7 @@ only if the types of the previous symbols are matching.</p>
 <span class="n">terms</span> <span class="o">=</span> <span class="p">[</span><span class="sa">r</span><span class="s2">&quot;(\ x y z -&gt; (z ((,) x y)))&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;(\ n m f x -&gt; (n (m f) x))&quot;</span><span class="p">]</span>
 <span class="n">head_prompt</span> <span class="o">=</span> <span class="sa">rf</span><span class="s2">&quot;&quot;&quot;Write terms in Haskell using only \ , -&gt;, (,), fst, snd and applications, but write applications in postfix notation.</span>
 <span class="s2">For instance:&quot;&quot;&quot;</span>
-<span class="n">postfix_example</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="sa">rf</span><span class="s2">&quot;Instead of </span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s2"> you should write </span><span class="si">{</span><span class="p">(</span><span class="n">PrefixToPostfix</span><span class="p">()</span><span class="o">*</span><span class="n">PostfixToTxt</span><span class="p">())</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">prefix_parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">t</span><span class="p">))</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="n">postfix_example</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="sa">rf</span><span class="s2">&quot;Instead of </span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s2"> you should write </span><span class="si">{</span><span class="p">(</span><span class="n">PrefixToPostfix</span><span class="p">()</span><span class="o">*</span><span class="n">PostfixToTxt</span><span class="p">())</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">prefix_parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">t</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span>
 
 <span class="n">tail_prompt</span> <span class="o">=</span> <span class="s2">&quot;Write a term applying 6 times its first argument to its second argument:&quot;</span>
 <span class="n">prompt</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">head_prompt</span><span class="p">,</span> <span class="o">*</span><span class="p">[</span><span class="n">postfix_example</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">terms</span><span class="p">],</span> <span class="n">tail_prompt</span><span class="p">])</span>
@@ -691,7 +691,7 @@ Write a term applying 6 times its first argument to its second argument:
 <span class="n">postfix_term</span> <span class="o">=</span> <span class="n">generator</span><span class="p">(</span><span class="n">prompt</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Generated term:</span><span class="se">\n\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">postfix_term</span><span class="p">)</span>
-<span class="n">prefix_term</span> <span class="o">=</span> <span class="p">(</span><span class="n">PostfixToPrefix</span><span class="p">()</span><span class="o">*</span><span class="n">PrefixToTxt</span><span class="p">())</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">postfix_parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">postfix_term</span><span class="p">))</span>
+<span class="n">prefix_term</span> <span class="o">=</span> <span class="p">(</span><span class="n">PostfixToPrefix</span><span class="p">()</span><span class="o">*</span><span class="n">PrefixToTxt</span><span class="p">())</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">postfix_parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">postfix_term</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Generated term in prefix form:</span><span class="se">\n\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">prefix_term</span><span class="p">)</span>
 </pre></div>
 </div>

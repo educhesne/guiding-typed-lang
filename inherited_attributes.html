@@ -415,7 +415,7 @@ inherited attribute expression attached to it as a synthesized attribute</p></li
 <p>We’ll go with an example to illustrate the feature. So, here is the (simplified) arithmetic grammar with <code class="docutils literal notranslate"><span class="pre">let</span> <span class="pre">...</span> <span class="pre">in</span> <span class="pre">...</span></code> statements:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">lark</span><span class="w"> </span><span class="kn">import</span> <span class="n">Lark</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">attribute_lark</span><span class="w"> </span><span class="kn">import</span> <span class="n">AttributeLark</span>
 
 <span class="n">inherited_arith_grammar</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
 <span class="si">%i</span><span class="s2">mport common.NUMBER</span>
@@ -447,12 +447,9 @@ inherited attribute expression attached to it as a synthesized attribute</p></li
 <span class="s2">| &quot;-&quot; atom{{ inh }}           {{ Ctx(inh.ctx, -syn[2].value) }}</span>
 <span class="s2">&quot;&quot;&quot;</span>
 
-<span class="n">parser</span> <span class="o">=</span> <span class="n">Lark</span><span class="p">(</span><span class="n">inherited_arith_grammar</span><span class="p">,</span> <span class="n">parser</span><span class="o">=</span><span class="s2">&quot;lalr&quot;</span><span class="p">)</span>
-<span class="n">interactive_parser</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_interactive</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="s2">&quot;start&quot;</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">parser</span><span class="o">.</span><span class="n">lex</span><span class="p">(</span><span class="s2">&quot;let x = 5, y = 10 in 5 + x + -y&quot;</span><span class="p">):</span>
-    <span class="n">interactive_parser</span><span class="o">.</span><span class="n">feed_token</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
-<span class="n">interactive_parser</span><span class="o">.</span><span class="n">feed_eof</span><span class="p">()</span>
-<span class="n">interactive_parser</span><span class="o">.</span><span class="n">parser_state</span><span class="o">.</span><span class="n">attribute</span>
+<span class="n">parser</span> <span class="o">=</span> <span class="n">AttributeLark</span><span class="p">(</span><span class="n">inherited_arith_grammar</span><span class="p">)</span>
+<span class="n">parse_tree</span><span class="p">,</span> <span class="n">attribute</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;let x = 5, y = 10 in 5 + x + -y&quot;</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="s2">&quot;start&quot;</span><span class="p">)</span>
+<span class="n">attribute</span>
 </pre></div>
 </div>
 </div>
@@ -469,7 +466,7 @@ before the evaluation of the attributes.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">ast</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">lark.grammar</span><span class="w"> </span><span class="kn">import</span> <span class="n">Terminal</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">attribute_lark.grammar</span><span class="w"> </span><span class="kn">import</span> <span class="n">Terminal</span>
 <span class="n">rules</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">rules</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span>
 <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">rules</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">origin</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> : </span><span class="si">{</span><span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">name</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="nb">isinstance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="w"> </span><span class="n">Terminal</span><span class="p">)</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="n">t</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">value</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">r</span><span class="o">.</span><span class="n">expansion</span><span class="p">]</span><span class="si">}</span><span class="s2">,</span><span class="se">\t{{{{</span><span class="s2"> </span><span class="si">{</span><span class="n">ast</span><span class="o">.</span><span class="n">unparse</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">ast</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span><span class="se">}}}}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -548,12 +545,9 @@ time using the global variable:</p>
 <span class="s2">| &quot;(&quot; sum &quot;)&quot;         {{ syn[2] }}</span>
 <span class="s2">&quot;&quot;&quot;</span>
 
-<span class="n">parser</span> <span class="o">=</span> <span class="n">Lark</span><span class="p">(</span><span class="n">global_arith_grammar</span><span class="p">,</span> <span class="n">parser</span><span class="o">=</span><span class="s2">&quot;lalr&quot;</span><span class="p">)</span>
-<span class="n">interactive_parser</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_interactive</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="s2">&quot;start&quot;</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">parser</span><span class="o">.</span><span class="n">lex</span><span class="p">(</span><span class="s2">&quot;let x = 5, y = 10 in 5 * x + y&quot;</span><span class="p">):</span>
-    <span class="n">interactive_parser</span><span class="o">.</span><span class="n">feed_token</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
-<span class="n">interactive_parser</span><span class="o">.</span><span class="n">feed_eof</span><span class="p">()</span>
-<span class="n">interactive_parser</span><span class="o">.</span><span class="n">parser_state</span><span class="o">.</span><span class="n">attribute</span>
+<span class="n">parser</span> <span class="o">=</span> <span class="n">AttributeLark</span><span class="p">(</span><span class="n">global_arith_grammar</span><span class="p">)</span>
+<span class="n">parse_tree</span><span class="p">,</span> <span class="n">attribute</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;let x = 5, y = 10 in 5 * x + y&quot;</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="s2">&quot;start&quot;</span><span class="p">)</span>
+<span class="n">attribute</span>
 </pre></div>
 </div>
 </div>

@@ -385,7 +385,7 @@ computed bottom-up).</p>
 <p>For instance the classic arithmetic grammar with synthesized attributes computing the value of the expression:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">lark</span><span class="w"> </span><span class="kn">import</span> <span class="n">Lark</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">attribute_lark</span><span class="w"> </span><span class="kn">import</span> <span class="n">AttributeLark</span>
 
 <span class="n">synthesized_arith_grammar</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
 <span class="si">%i</span><span class="s2">mport common.NUMBER</span>
@@ -407,12 +407,9 @@ computed bottom-up).</p>
 <span class="s2">| &quot;(&quot; sum &quot;)&quot;         {{syn[2]}}</span>
 <span class="s2">&quot;&quot;&quot;</span>
 
-<span class="n">parser</span> <span class="o">=</span> <span class="n">Lark</span><span class="p">(</span><span class="n">synthesized_arith_grammar</span><span class="p">,</span> <span class="n">parser</span><span class="o">=</span><span class="s2">&quot;lalr&quot;</span><span class="p">)</span>
-<span class="n">interactive_parser</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_interactive</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="s2">&quot;start&quot;</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">parser</span><span class="o">.</span><span class="n">lex</span><span class="p">(</span><span class="s2">&quot;5 * 3 - 7&quot;</span><span class="p">):</span>
-    <span class="n">interactive_parser</span><span class="o">.</span><span class="n">feed_token</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
-<span class="n">interactive_parser</span><span class="o">.</span><span class="n">feed_eof</span><span class="p">()</span>
-<span class="n">interactive_parser</span><span class="o">.</span><span class="n">parser_state</span><span class="o">.</span><span class="n">attribute</span>
+<span class="n">parser</span> <span class="o">=</span> <span class="n">AttributeLark</span><span class="p">(</span><span class="n">synthesized_arith_grammar</span><span class="p">)</span>
+<span class="n">parse_tree</span><span class="p">,</span> <span class="n">attribute</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;5 * 3 - 7&quot;</span><span class="p">)</span>
+<span class="n">attribute</span>
 </pre></div>
 </div>
 </div>
