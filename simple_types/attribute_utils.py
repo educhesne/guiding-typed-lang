@@ -12,7 +12,7 @@ def init_ctx(gv):
 
 
 def ctx_vars(gv):
-    return '|'.join([v + '$' for v in gv.ctx]) if gv.ctx else ''
+    return '|'.join([v for v in gv.ctx]) if gv.ctx else ''
 
 
 def add_vars(gv, var_list):
@@ -22,7 +22,7 @@ def add_vars(gv, var_list):
 def exclude_vars(gv, var_list):
     exclude_list = var_list + list(gv.ctx.keys())
     if len(exclude_list) > 0:
-        return "(?!(" + '|'.join([w + '$' for w in exclude_list]) + "))"
+        return "(?!(" + '|'.join([w for w in exclude_list]) + "))"
     else:
         return "(.*?)"
 
