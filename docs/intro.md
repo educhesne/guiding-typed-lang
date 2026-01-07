@@ -17,7 +17,7 @@ I'll start by presenting the addition of some needed features to Lark:
 * [Contextual terminal symbols](contextual): a new feature designed for guided generation, in order
 to have the admissible values of the next token in the generation depend on the context of execution
 
-These features are implemented in a fork of Lark avalaible [here](https://github.com/educhesne/lark/tree/attributed_lark).
+These features are implemented in a fork of Lark avalaible [here](https://github.com/educhesne/attribute_lark).
 Some minimal changes to outlines were also necessary to ensure their compatibility
 ([there](https://github.com/educhesne/outlines/tree/attributed_lark_compatibility)).
 
